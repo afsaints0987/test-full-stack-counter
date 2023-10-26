@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     fetchCount();
-    const interval = setInterval(fetchCount, 1000); // fetch every 5 seconds
+    const interval = setInterval(fetchCount, 1000);
     return () => clearInterval(interval);
   }, [fetchCount]);
 
