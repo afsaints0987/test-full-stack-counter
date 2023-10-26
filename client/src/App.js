@@ -1,25 +1,27 @@
-import {useState, useEffect} from 'react'
+import React, { useState, useEffect, useCallback } from "react";
 
 function App() {
-  const [counter, setCounter] = useState(0)
+  const [counter, setCounter] = useState(0);
+
+  const fetchCount = useCallback(async () => {
+    const data = await fetch("http://localhost:5500");
+    const count = await data.json();
+    setCounter(count);
+  }, []);
+
+  const updateCount = useCallback(async () => {
+    const response = await fetch("http://localhost:5500/count", {
+      method: "POST",
+    });
+    const count = await response.json();
+    setCounter(count);
+  }, []);
 
   useEffect(() => {
-    const getCount = async () => {
-      let data = await fetch('http://localhost:5500')
-      const count = await data.json()
-      setCounter(count)
-    }
-
-    getCount()
-  },[])
-
-  const updateCount = async () => {
-    const response = await fetch('http://localhost:5500/count', {
-      method: 'POST',
-    })
-    const count = await response.json()
-    setCounter(count)
-  }
+    fetchCount();
+    const interval = setInterval(fetchCount, 1000); // fetch every 5 seconds
+    return () => clearInterval(interval);
+  }, [fetchCount]);
 
   return (
     <div className="app">
